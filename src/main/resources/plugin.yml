@@ -1,0 +1,11 @@
+name: EnhancedPing
+author: FoodCans
+version: ${project.version}
+api-version: 1.13
+depend: [ ProtocolLib ]
+main: dev.foodcans.enhancedping.EnhancedPing
+commands:
+  ping:
+    description: View your ping
+  pingadmin:
+    description: EnhancedPing administrative commands

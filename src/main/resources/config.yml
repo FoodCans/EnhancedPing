@@ -1,0 +1,28 @@
+#####################################################################################################
+# ███████╗███╗░░██╗██╗░░██╗░█████╗░███╗░░██╗░█████╗░███████╗██████╗░  ██████╗░██╗███╗░░██╗░██████╗░ #
+# ██╔════╝████╗░██║██║░░██║██╔══██╗████╗░██║██╔══██╗██╔════╝██╔══██╗  ██╔══██╗██║████╗░██║██╔════╝░ #
+# █████╗░░██╔██╗██║███████║███████║██╔██╗██║██║░░╚═╝█████╗░░██║░░██║  ██████╔╝██║██╔██╗██║██║░░██╗░ #
+# ██╔══╝░░██║╚████║██╔══██║██╔══██║██║╚████║██║░░██╗██╔══╝░░██║░░██║  ██╔═══╝░██║██║╚████║██║░░╚██╗ #
+# ███████╗██║░╚███║██║░░██║██║░░██║██║░╚███║╚█████╔╝███████╗██████╔╝  ██║░░░░░██║██║░╚███║╚██████╔╝ #
+# ╚══════╝╚═╝░░╚══╝╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝░╚════╝░╚══════╝╚═════╝░  ╚═╝░░░░░╚═╝╚═╝░░╚══╝░╚═════╝░ #
+#####################################################################################################
+
+# Should players receive a notification that their ping is too high in the action bar
+Show-High-Ping: true
+# How often (in ticks) should a high ping notification be sent to players
+High-Ping-Rate: 70
+# Threshold for players to receive high ping notification
+High-Ping-Threshold: 300
+# Number of pings to keep track of for average ping
+Max-Pings: 10
+# How often (in ticks) to send a new ping request to a player
+Ping-Rate: 20
+# How long (in ticks) before a ping request is timed out
+Ping-Request-Timeout: 200
+# Maximum ping for each value. Note: The final value is Horrible which has no max value.
+Ping-Values:
+  Excellent: 75
+  Good: 150
+  Okay: 225
+  Bad: 300
+  Very-Bad: 400
