@@ -1,9 +1,12 @@
 package dev.foodcans.enhancedping.listener;
 
 import dev.foodcans.enhancedping.ping.PingManager;
+import dev.foodcans.enhancedping.settings.Config;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+
+import java.util.UUID;
 
 public class PlayerListener implements Listener
 {
@@ -17,6 +20,11 @@ public class PlayerListener implements Listener
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event)
     {
-        pingManager.addPingPlayer(event.getPlayer().getUniqueId());
+        UUID uuid = event.getPlayer().getUniqueId();
+        pingManager.addPingPlayer(uuid);
+        if (Config.SHOW_PING_BAR_DEFAULT)
+        {
+            pingManager.setShowing(uuid, true);
+        }
     }
 }

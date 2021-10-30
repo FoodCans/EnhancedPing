@@ -7,13 +7,23 @@ public class PingAPI
 {
     private static PingManager pingManager;
 
+    static void init(PingManager pingManager1)
+    {
+        pingManager = pingManager1;
+    }
+
     public static long getPing(Player player)
     {
         return pingManager.getPingPlayer(player.getUniqueId()).getPings().getPing();
     }
 
-    static void init(PingManager pingManager1)
+    public static boolean isShowingPingBar(Player player)
     {
-        pingManager = pingManager1;
+        return pingManager.isShowing(player.getUniqueId());
+    }
+
+    public static void setShowingPingBar(Player player, boolean showing)
+    {
+        pingManager.setShowing(player.getUniqueId(), showing);
     }
 }

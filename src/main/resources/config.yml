@@ -7,12 +7,31 @@
 # ╚══════╝╚═╝░░╚══╝╚═╝░░╚═╝╚═╝░░╚═╝╚═╝░░╚══╝░╚════╝░╚══════╝╚═════╝░  ╚═╝░░░░░╚═╝╚═╝░░╚══╝░╚═════╝░ #
 #####################################################################################################
 
+####################
+# Storage Settings #
+####################
+
+# Should the plugin attempt to migrate data from one storage type to the other? (Will delete old data)
+# Note: Whatever Storage-Type is set to, data will be pulled from the opposite type if available.
+# Note: Make sure to turn off this setting after using it, or you might run into issues.
+Migrate: false
+# Json, MySQL
+Storage-Type: Json
+MySQL:
+  Url: 'localhost:3306/mc'
+  Username: 'root'
+  Password: ''
+  Allow-Public-Key-Retrieval: true
+  Use-SSL: false
+
+####################
+# General Settings #
+####################
+
 # Should players receive a notification that their ping is too high in the action bar
-Show-High-Ping: true
+Show-Ping-Bar-Default: true
 # How often (in ticks) should a high ping notification be sent to players
-High-Ping-Rate: 70
-# Threshold for players to receive high ping notification
-High-Ping-Threshold: 300
+Ping-Bar-Rate: 10
 # Number of pings to keep track of for average ping
 Max-Pings: 10
 # How often (in ticks) to send a new ping request to a player
@@ -21,7 +40,8 @@ Ping-Rate: 20
 Ping-Request-Timeout: 200
 # Maximum ping for each value. Note: The final value is Horrible which has no max value.
 Ping-Values:
-  Excellent: 75
+  Excellent: 50
+  Great: 75
   Good: 150
   Okay: 225
   Bad: 300

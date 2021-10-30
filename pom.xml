@@ -84,6 +84,12 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <artifactId>HikariCP</artifactId>
+            <groupId>com.zaxxer</groupId>
+            <version>4.0.3</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>dev.foodcans</groupId>
             <artifactId>pluginutils</artifactId>
             <version>1.0.0</version>

@@ -1,16 +1,15 @@
 package dev.foodcans.enhancedping.command;
 
 import dev.foodcans.enhancedping.PingAPI;
-import dev.foodcans.enhancedping.ping.PingValue;
 import dev.foodcans.enhancedping.settings.lang.Lang;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class PingCommand implements CommandExecutor
+public class PingToggleCommand implements CommandExecutor
 {
-    private static final String PERMISSION = "enhancedping.command.ping";
+    private static final String PERMISSION = "enhancedping.command.pingtoggle";
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args)
@@ -26,9 +25,15 @@ public class PingCommand implements CommandExecutor
             Lang.NO_PERMISSION_COMMAND.sendMessage(player, PERMISSION);
             return true;
         }
-        long ping = PingAPI.getPing(player);
-        PingValue pingValue = PingValue.ofPing(ping);
-        Lang.PING_FORMAT.sendMessage(player, pingValue.getHexColor() + Long.toString(ping));
+        boolean toggledShowing = !PingAPI.isShowingPingBar(player);
+        PingAPI.setShowingPingBar(player, toggledShowing);
+        if (toggledShowing)
+        {
+            Lang.TOGGLED_SHOWING_ON.sendMessage(player);
+        } else
+        {
+            Lang.TOGGLED_SHOWING_OFF.sendMessage(player);
+        }
         return true;
     }
 }

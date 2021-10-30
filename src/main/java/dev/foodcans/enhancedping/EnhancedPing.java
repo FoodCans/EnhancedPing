@@ -3,6 +3,7 @@ package dev.foodcans.enhancedping;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.ProtocolManager;
 import dev.foodcans.enhancedping.command.PingCommand;
+import dev.foodcans.enhancedping.command.PingToggleCommand;
 import dev.foodcans.enhancedping.command.admin.AdminPingCommand;
 import dev.foodcans.enhancedping.command.admin.ReloadCommand;
 import dev.foodcans.enhancedping.hook.PlaceholderAPIHook;
@@ -12,9 +13,16 @@ import dev.foodcans.enhancedping.ping.PingManager;
 import dev.foodcans.enhancedping.settings.Config;
 import dev.foodcans.enhancedping.settings.lang.Lang;
 import dev.foodcans.enhancedping.settings.lang.LangFile;
+import dev.foodcans.enhancedping.storage.IStorage;
+import dev.foodcans.enhancedping.storage.JsonStorage;
+import dev.foodcans.enhancedping.storage.MySQLStorage;
 import dev.foodcans.pluginutils.command.FailureReason;
 import dev.foodcans.pluginutils.command.PluginCommand;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.UUID;
 
 public class EnhancedPing extends JavaPlugin
 {
@@ -23,11 +31,7 @@ public class EnhancedPing extends JavaPlugin
     private ProtocolManager protocolManager;
     private PacketListener packetListener;
     private LangFile langFile;
-
-    public static EnhancedPing getInstance()
-    {
-        return instance;
-    }
+    private IStorage storage;
 
     @Override
     public void onLoad()
@@ -42,10 +46,15 @@ public class EnhancedPing extends JavaPlugin
     @Override
     public void onEnable()
     {
-        PingManager pingManager = new PingManager(this);
+        if (!setupStorage())
+        {
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+        PingManager pingManager = new PingManager(this, storage);
         setupListeners(pingManager);
         setupCommands(pingManager);
-        pingManager.startHighPingTask();
+        pingManager.startShowPingTask();
 
         setupPlaceholder();
 
@@ -59,6 +68,58 @@ public class EnhancedPing extends JavaPlugin
         this.protocolManager.removePacketListener(this.packetListener);
     }
 
+    private boolean setupStorage()
+    {
+        switch (Config.STORAGE_TYPE)
+        {
+            case JSON:
+                storage = new JsonStorage();
+                if (Config.MIGRATE)
+                {
+                    try
+                    {
+                        MySQLStorage mySQLStorage = new MySQLStorage();
+                        for (UUID uuid : mySQLStorage.getAllData())
+                        {
+                            storage.saveShowing(uuid, true);
+                        }
+                        mySQLStorage.deleteStorage();
+                        Bukkit.getLogger().warning(ChatColor.GREEN + "MySQL data migrated to Json!");
+                    } catch (Exception e)
+                    {
+                        // MySQL Not available
+                        Bukkit.getLogger().warning(ChatColor.RED + "MySQL data not available to migrate to Json!");
+                    }
+                }
+                return true;
+            case MYSQL:
+                storage = new MySQLStorage();
+                if (Config.MIGRATE)
+                {
+                    try
+                    {
+                        JsonStorage jsonStorage = new JsonStorage();
+                        for (UUID uuid : jsonStorage.getAllData())
+                        {
+                            storage.saveShowing(uuid, true);
+                        }
+                        jsonStorage.deleteStorage();
+                        Bukkit.getLogger().warning(ChatColor.GREEN + "Json data migrated to MySQL!");
+                    } catch (Exception e)
+                    {
+                        // Json Not available
+                        Bukkit.getLogger().warning(ChatColor.RED + "Json data not available to migrate to MySQL!");
+                    }
+                }
+                return true;
+            default:
+                // Wrong storage type entered
+                Bukkit.getLogger().severe(
+                        "Incorrect storage type. Please use either Json or MySQL! Disabling plugin....");
+                return false;
+        }
+    }
+
     private void setupListeners(PingManager pingManager)
     {
         this.packetListener = new PacketListener(this, pingManager, this.protocolManager);
@@ -70,6 +131,7 @@ public class EnhancedPing extends JavaPlugin
     private void setupCommands(PingManager pingManager)
     {
         getCommand("ping").setExecutor(new PingCommand());
+        getCommand("pingtoggle").setExecutor(new PingToggleCommand());
         PluginCommand pingAdminCommand = new PluginCommand((failureReason, sender, replacements) ->
         {
             if (failureReason == FailureReason.NO_ARGS)
@@ -113,5 +175,10 @@ public class EnhancedPing extends JavaPlugin
     public LangFile getLangFile()
     {
         return langFile;
+    }
+
+    public static EnhancedPing getInstance()
+    {
+        return instance;
     }
 }

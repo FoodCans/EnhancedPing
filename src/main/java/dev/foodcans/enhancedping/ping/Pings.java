@@ -8,10 +8,12 @@ import java.util.List;
 public class Pings
 {
     private final List<Ping> pings;
+    private final PingBar pingBar;
 
     public Pings()
     {
         this.pings = new ArrayList<>();
+        this.pingBar = new PingBar();
     }
 
     public void addPing(long timeSent)
@@ -21,11 +23,6 @@ public class Pings
         {
             pings.remove(0);
         }
-    }
-
-    public void clearPings()
-    {
-        pings.clear();
     }
 
     public boolean isEmpty()
@@ -43,16 +40,16 @@ public class Pings
         if (!pings.isEmpty())
         {
             Ping ping = pings.get(pings.size() - 1);
-            ping.received();
+            if (!ping.hasReceived())
+            {
+                ping.received();
+                pingBar.addPing(ping.getPing());
+            }
         }
     }
 
     public long getPing()
     {
-        if (pings.isEmpty())
-        {
-            return -1;
-        }
         long size = 0;
         long total = 0;
         for (Ping ping : pings)
@@ -63,7 +60,12 @@ public class Pings
                 total += ping.getPing();
             }
         }
-        return total / size;
+        return size == 0 ? -1 : total / size;
+    }
+
+    public PingBar getPingBar()
+    {
+        return pingBar;
     }
 
     private static class Ping
@@ -83,10 +85,7 @@ public class Pings
 
         public void received()
         {
-            if (timeReceived == null)
-            {
-                timeReceived = System.currentTimeMillis();
-            }
+            timeReceived = System.currentTimeMillis();
         }
 
         public long getPing()

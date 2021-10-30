@@ -47,9 +47,11 @@ public class PacketListener extends PacketAdapter
         if (sentPacketIds.remove(id))
         {
             PingPlayer pingPlayer = pingManager.getPingPlayer(player.getUniqueId());
-            pingManager.cancelTimeoutTask(pingPlayer);
-            Pings pings = pingPlayer.getPings();
-            pings.updateLastPing();
+            if (pingManager.cancelTimeoutTask(pingPlayer))
+            {
+                Pings pings = pingPlayer.getPings();
+                pings.updateLastPing();
+            }
             event.setCancelled(true);
         }
     }

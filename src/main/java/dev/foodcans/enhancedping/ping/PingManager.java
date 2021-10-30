@@ -3,86 +3,109 @@ package dev.foodcans.enhancedping.ping;
 import dev.foodcans.enhancedping.EnhancedPing;
 import dev.foodcans.enhancedping.PingAPI;
 import dev.foodcans.enhancedping.settings.Config;
-import dev.foodcans.enhancedping.settings.lang.Lang;
+import dev.foodcans.enhancedping.storage.IStorage;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-import static dev.foodcans.pluginutils.PluginUtils.Strings.translateColor;
+import java.util.*;
 
 public class PingManager
 {
     private final EnhancedPing plugin;
+    private final IStorage storage;
 
     private Map<UUID, PingPlayer> pingPlayerMap;
     private Map<UUID, BukkitTask> taskMap;
-    private BukkitTask highPingTask;
+    private Set<UUID> showing; // TODO NEed to rework this completely.
+    private BukkitTask showPingTask;
 
-    public PingManager(EnhancedPing plugin)
+    public PingManager(EnhancedPing plugin, IStorage storage)
     {
         this.plugin = plugin;
+        this.storage = storage;
         this.pingPlayerMap = new HashMap<>();
         this.taskMap = new HashMap<>();
+        this.showing = new HashSet<>();
     }
 
     public void addPingPlayer(UUID uuid)
     {
-        pingPlayerMap.putIfAbsent(uuid, new PingPlayer(uuid));
+        pingPlayerMap.remove(uuid);
+        pingPlayerMap.put(uuid, new PingPlayer(uuid));
     }
 
     public void startTimeoutTask(PingPlayer pingPlayer)
     {
         cancelTimeoutTask(pingPlayer);
-        BukkitTask task = Bukkit.getScheduler().runTaskLater(plugin, () -> pingPlayer.getPings().updateLastPing(),
-                Config.PING_REQUEST_TIMEOUT);
+        BukkitTask task = Bukkit.getScheduler().runTaskLater(plugin, () ->
+        {
+            pingPlayer.getPings().updateLastPing();
+            taskMap.remove(pingPlayer.getUuid());
+        }, Config.PING_REQUEST_TIMEOUT);
         taskMap.put(pingPlayer.getUuid(), task);
     }
 
-    public void cancelTimeoutTask(PingPlayer pingPlayer)
+    public boolean cancelTimeoutTask(PingPlayer pingPlayer)
     {
         if (taskMap.containsKey(pingPlayer.getUuid()))
         {
             taskMap.get(pingPlayer.getUuid()).cancel();
+            return true;
         }
+        return false;
     }
 
-    public void startHighPingTask()
+    public void startShowPingTask()
     {
-        highPingTask = Bukkit.getScheduler().runTaskTimer(plugin, () ->
+        showPingTask = Bukkit.getScheduler().runTaskTimer(plugin, () ->
         {
             for (PingPlayer pingPlayer : pingPlayerMap.values())
             {
-                if (pingPlayer.getPings().getPing() > Config.HIGH_PING_THRESHOLD)
+                if (isShowing(pingPlayer.getUuid()))
                 {
                     Player player = Bukkit.getPlayer(pingPlayer.getUuid());
                     if (player == null)
                     {
                         continue;
                     }
+
+                    // TODO Format ping bar
                     long ping = PingAPI.getPing(player);
                     PingValue pingValue = PingValue.ofPing(ping);
-                    TextComponent component =
-                            new TextComponent(
-                                    translateColor(Lang.HIGH_PING_FORMAT.getMessage(pingValue + Long.toString(ping))));
+                    TextComponent component = new TextComponent(pingPlayer.getPings().getPingBar().build());
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, component);
                 }
             }
-        }, 0L, Config.HIGH_PING_RATE);
+        }, 0L, Config.PING_BAR_RATE);
     }
 
-    public void stopHighPingTask()
+    public void stopShowPingTask()
     {
-        if (highPingTask != null)
+        if (showPingTask != null)
         {
-            highPingTask.cancel();
-            highPingTask = null;
+            showPingTask.cancel();
+            showPingTask = null;
         }
+    }
+
+    public boolean isShowing(UUID uuid)
+    {
+        return showing.contains(uuid);
+    }
+
+    public void setShowing(UUID uuid, boolean showing)
+    {
+        if (showing)
+        {
+            this.showing.add(uuid);
+        } else
+        {
+            this.showing.remove(uuid);
+        }
+        storage.setShowing(uuid, showing);
     }
 
     public PingPlayer getPingPlayer(UUID uuid)

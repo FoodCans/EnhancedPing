@@ -7,5 +7,7 @@ main: dev.foodcans.enhancedping.EnhancedPing
 commands:
   ping:
     description: View your ping
+  pingtoggle:
+    description: Toggle viewing the ping bar
   pingadmin:
     description: EnhancedPing administrative commands

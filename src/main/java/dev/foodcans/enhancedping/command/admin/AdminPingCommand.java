@@ -31,7 +31,7 @@ public class AdminPingCommand extends SubCommand
         long ping = PingAPI.getPing(player);
         PingValue pingValue = PingValue.ofPing(ping);
         Lang.PING_FORMAT_ADMIN.sendMessage(sender, player.getName(),
-                pingValue.getColor() + Long.toString(ping));
+                pingValue.getHexColor() + Long.toString(ping));
     }
 
     @Override

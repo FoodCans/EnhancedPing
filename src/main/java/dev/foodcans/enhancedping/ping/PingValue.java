@@ -1,29 +1,36 @@
 package dev.foodcans.enhancedping.ping;
 
 import dev.foodcans.enhancedping.settings.Config;
-import org.bukkit.ChatColor;
+import net.md_5.bungee.api.ChatColor;
 
 public enum PingValue
 {
-    EXCELLENT(ChatColor.DARK_GREEN),
-    GOOD(ChatColor.GREEN),
-    OKAY(ChatColor.YELLOW),
-    BAD(ChatColor.GOLD),
-    VERY_BAD(ChatColor.RED),
-    HORRIBLE(ChatColor.DARK_RED);
+    EXCELLENT("#00FF00", '\u208B'),
+    GREAT("#4BFF00", '\uFE58'),
+    GOOD("#A5FF00", '\u2212'),
+    OKAY("#FFFF00", '\u23BC'),
+    BAD("#FFB400", '\u23BB'),
+    VERY_BAD("#FF5A00", '\u00AF'),
+    HORRIBLE("#FF0000", '\u23BA');
 
-    private ChatColor color;
+    private String hexColor;
+    private char unicode;
 
-    PingValue(ChatColor color)
+    PingValue(String hexColor, char unicode)
     {
-        this.color = color;
+        this.hexColor = hexColor;
+        this.unicode = unicode;
     }
 
     public static PingValue ofPing(long ping)
     {
+
         if (ping <= Config.PING_VALUES_EXCELLENT)
         {
             return EXCELLENT;
+        } else if (ping <= Config.PING_VALUES_GREAT)
+        {
+            return GREAT;
         } else if (ping <= Config.PING_VALUES_GOOD)
         {
             return GOOD;
@@ -42,8 +49,13 @@ public enum PingValue
         }
     }
 
-    public ChatColor getColor()
+    public ChatColor getHexColor()
     {
-        return color;
+        return ChatColor.of(hexColor);
+    }
+
+    public char getUnicode()
+    {
+        return unicode;
     }
 }

@@ -25,8 +25,8 @@ public class ReloadCommand extends SubCommand
         EnhancedPing.getInstance().reloadConfig();
         EnhancedPing.getInstance().getLangFile().reload();
         Config.load(EnhancedPing.getInstance().getConfig());
-        pingManager.stopHighPingTask();
-        pingManager.startHighPingTask();
+        pingManager.stopShowPingTask();
+        pingManager.startShowPingTask();
         Lang.CONFIG_RELOADED.sendMessage(sender);
     }
 
