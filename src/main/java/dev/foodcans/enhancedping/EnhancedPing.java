@@ -22,6 +22,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Map;
 import java.util.UUID;
 
 public class EnhancedPing extends JavaPlugin
@@ -79,9 +80,9 @@ public class EnhancedPing extends JavaPlugin
                     try
                     {
                         MySQLStorage mySQLStorage = new MySQLStorage();
-                        for (UUID uuid : mySQLStorage.getAllData())
+                        for (Map.Entry<UUID, Boolean> entry : mySQLStorage.getAllData().entrySet())
                         {
-                            storage.saveShowing(uuid, true);
+                            storage.saveShowing(entry.getKey(), entry.getValue());
                         }
                         mySQLStorage.deleteStorage();
                         Bukkit.getLogger().warning(ChatColor.GREEN + "MySQL data migrated to Json!");
@@ -99,9 +100,9 @@ public class EnhancedPing extends JavaPlugin
                     try
                     {
                         JsonStorage jsonStorage = new JsonStorage();
-                        for (UUID uuid : jsonStorage.getAllData())
+                        for (Map.Entry<UUID, Boolean> entry : jsonStorage.getAllData().entrySet())
                         {
-                            storage.saveShowing(uuid, true);
+                            storage.saveShowing(entry.getKey(), entry.getValue());
                         }
                         jsonStorage.deleteStorage();
                         Bukkit.getLogger().warning(ChatColor.GREEN + "Json data migrated to MySQL!");

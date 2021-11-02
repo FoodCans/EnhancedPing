@@ -23,12 +23,12 @@ public class Config
     public static long PING_RATE;
     public static long PING_REQUEST_TIMEOUT;
 
-    public static long PING_VALUES_EXCELLENT;
-    public static long PING_VALUES_GREAT;
-    public static long PING_VALUES_GOOD;
-    public static long PING_VALUES_OKAY;
-    public static long PING_VALUES_BAD;
-    public static long PING_VALUES_VERY_BAD;
+    public static long PING_GRADES_EXCELLENT;
+    public static long PING_GRADES_GREAT;
+    public static long PING_GRADES_GOOD;
+    public static long PING_GRADES_OKAY;
+    public static long PING_GRADES_BAD;
+    public static long PING_GRADES_VERY_BAD;
 
     public static void load(FileConfiguration config)
     {
@@ -49,13 +49,13 @@ public class Config
         PING_RATE = config.getLong("Ping-Rate");
         PING_REQUEST_TIMEOUT = config.getLong("Ping-Request-Timeout");
 
-        ConfigurationSection valuesSection = config.getConfigurationSection("Ping-Values");
-        PING_VALUES_EXCELLENT = valuesSection.getLong("Excellent");
-        PING_VALUES_GREAT = valuesSection.getLong("Great");
-        PING_VALUES_GOOD = valuesSection.getLong("Good");
-        PING_VALUES_OKAY = valuesSection.getLong("Okay");
-        PING_VALUES_BAD = valuesSection.getLong("Bad");
-        PING_VALUES_VERY_BAD = valuesSection.getLong("Very-Bad");
+        ConfigurationSection gradesSection = config.getConfigurationSection("Ping-Grades");
+        PING_GRADES_EXCELLENT = gradesSection.getLong("Excellent");
+        PING_GRADES_GREAT = gradesSection.getLong("Great");
+        PING_GRADES_GOOD = gradesSection.getLong("Good");
+        PING_GRADES_OKAY = gradesSection.getLong("Okay");
+        PING_GRADES_BAD = gradesSection.getLong("Bad");
+        PING_GRADES_VERY_BAD = gradesSection.getLong("Very-Bad");
     }
 
     public enum StorageType

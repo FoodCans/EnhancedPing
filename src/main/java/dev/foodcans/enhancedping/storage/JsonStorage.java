@@ -3,6 +3,7 @@ package dev.foodcans.enhancedping.storage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import dev.foodcans.enhancedping.EnhancedPing;
+import dev.foodcans.enhancedping.settings.Config;
 import dev.foodcans.pluginutils.Callback;
 import org.bukkit.Bukkit;
 
@@ -14,8 +15,8 @@ import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class JsonStorage implements IStorage
@@ -56,14 +57,18 @@ public class JsonStorage implements IStorage
     }
 
     @Override
-    public Boolean loadShowing(UUID uuid)
+    public boolean loadShowing(UUID uuid)
     {
         Path path = Paths.get(showingFile.getAbsolutePath());
         try (Reader reader = Files.newBufferedReader(path))
         {
-            Type uuidListType = new TypeToken<ArrayList<UUID>>(){}.getType();
-            List<UUID> list = gson.fromJson(reader, uuidListType);
-            return list.contains(uuid);
+            Type mapType = new TypeToken<Map<UUID, Boolean>>(){}.getType();
+            Map<UUID, Boolean> map = gson.fromJson(reader, mapType);
+            if (map.containsKey(uuid))
+            {
+                return map.get(uuid);
+            }
+            return Config.SHOW_PING_BAR_DEFAULT;
         } catch (IOException e)
         {
             e.printStackTrace();
@@ -77,15 +82,9 @@ public class JsonStorage implements IStorage
         Path path = Paths.get(showingFile.getAbsolutePath());
         try (Writer writer = Files.newBufferedWriter(path))
         {
-            List<UUID> list = getAllData();
-            if (showing && !list.contains(uuid))
-            {
-                list.add(uuid);
-            } else
-            {
-                list.remove(uuid);
-            }
-            gson.toJson(list, writer);
+            Map<UUID, Boolean> map = getAllData();
+            map.put(uuid, showing);
+            gson.toJson(map, writer);
         } catch (IOException e)
         {
             e.printStackTrace();
@@ -93,24 +92,23 @@ public class JsonStorage implements IStorage
     }
 
     @Override
-    public List<UUID> getAllData()
+    public Map<UUID, Boolean> getAllData()
     {
-        List<UUID> list = new ArrayList<>();
+        Map<UUID, Boolean> map = null;
         Path path = Paths.get(showingFile.getAbsolutePath());
         try (Reader reader = Files.newBufferedReader(path))
         {
-            Type uuidListType = new TypeToken<ArrayList<UUID>>(){}.getType();
-            List<UUID> loaded = gson.fromJson(reader, uuidListType);
-            if (loaded == null)
+            Type mapType = new TypeToken<Map<UUID, Boolean>>(){}.getType();
+            map = gson.fromJson(reader, mapType);
+            if (map == null)
             {
-                 loaded = new ArrayList<>();
+                map = new  HashMap<>();
             }
-            list.addAll(loaded);
         } catch (IOException e)
         {
             e.printStackTrace();
         }
-        return list;
+        return map;
     }
 
     @Override

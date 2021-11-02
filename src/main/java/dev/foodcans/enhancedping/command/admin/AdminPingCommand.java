@@ -1,7 +1,7 @@
 package dev.foodcans.enhancedping.command.admin;
 
 import dev.foodcans.enhancedping.PingAPI;
-import dev.foodcans.enhancedping.ping.PingValue;
+import dev.foodcans.enhancedping.ping.PingGrade;
 import dev.foodcans.enhancedping.settings.lang.Lang;
 import dev.foodcans.pluginutils.command.SubCommand;
 import org.bukkit.Bukkit;
@@ -29,9 +29,9 @@ public class AdminPingCommand extends SubCommand
         }
 
         long ping = PingAPI.getPing(player);
-        PingValue pingValue = PingValue.ofPing(ping);
+        PingGrade pingGrade = PingGrade.ofPing(ping);
         Lang.PING_FORMAT_ADMIN.sendMessage(sender, player.getName(),
-                pingValue.getHexColor() + Long.toString(ping));
+                pingGrade.getHexColor() + Long.toString(ping));
     }
 
     @Override

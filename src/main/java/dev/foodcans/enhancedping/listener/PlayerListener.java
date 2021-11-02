@@ -22,9 +22,6 @@ public class PlayerListener implements Listener
     {
         UUID uuid = event.getPlayer().getUniqueId();
         pingManager.addPingPlayer(uuid);
-        if (Config.SHOW_PING_BAR_DEFAULT)
-        {
-            pingManager.setShowing(uuid, true);
-        }
+        pingManager.getStorage().fetchShowing(uuid, showing -> pingManager.setShowing(uuid, showing));
     }
 }

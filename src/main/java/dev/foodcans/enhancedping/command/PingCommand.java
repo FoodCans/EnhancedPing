@@ -1,7 +1,7 @@
 package dev.foodcans.enhancedping.command;
 
 import dev.foodcans.enhancedping.PingAPI;
-import dev.foodcans.enhancedping.ping.PingValue;
+import dev.foodcans.enhancedping.ping.PingGrade;
 import dev.foodcans.enhancedping.settings.lang.Lang;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,8 +27,8 @@ public class PingCommand implements CommandExecutor
             return true;
         }
         long ping = PingAPI.getPing(player);
-        PingValue pingValue = PingValue.ofPing(ping);
-        Lang.PING_FORMAT.sendMessage(player, pingValue.getHexColor() + Long.toString(ping));
+        PingGrade pingGrade = PingGrade.ofPing(ping);
+        Lang.PING_FORMAT.sendMessage(player, pingGrade.getHexColor() + Long.toString(ping));
         return true;
     }
 }

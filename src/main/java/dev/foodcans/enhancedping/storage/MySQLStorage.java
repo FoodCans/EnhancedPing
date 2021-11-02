@@ -11,8 +11,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class MySQLStorage implements IStorage
@@ -67,14 +67,18 @@ public class MySQLStorage implements IStorage
     }
 
     @Override
-    public Boolean loadShowing(UUID uuid)
+    public boolean loadShowing(UUID uuid)
     {
         try (Connection connection = getConnection())
         {
             PreparedStatement statement = connection.prepareStatement(Queries.GET);
             statement.setString(1, uuid.toString());
             ResultSet result = statement.executeQuery();
-            return result.next();
+            if (result.next())
+            {
+                return result.getBoolean("showing");
+            }
+            return Config.SHOW_PING_BAR_DEFAULT;
         } catch (SQLException e)
         {
             e.printStackTrace();
@@ -87,8 +91,10 @@ public class MySQLStorage implements IStorage
     {
         try (Connection connection = getConnection())
         {
-            PreparedStatement statement = connection.prepareStatement(showing ? Queries.INSERT : Queries.DELETE);
+            PreparedStatement statement = connection.prepareStatement(Queries.INSERT);
             statement.setString(1, uuid.toString());
+            statement.setBoolean(2, showing);
+            statement.setBoolean(3, showing);
             statement.executeUpdate();
         } catch (SQLException e)
         {
@@ -97,22 +103,22 @@ public class MySQLStorage implements IStorage
     }
 
     @Override
-    public List<UUID> getAllData()
+    public Map<UUID, Boolean> getAllData()
     {
-        List<UUID> list = new ArrayList<>();
+        Map<UUID, Boolean> map = new HashMap<>();
         try (Connection connection = getConnection())
         {
             PreparedStatement statement = connection.prepareStatement(Queries.GET_ALL);
             ResultSet result = statement.executeQuery();
             while (result.next())
             {
-                list.add(UUID.fromString(result.getString("uuid")));
+                map.put(UUID.fromString(result.getString("uuid")), result.getBoolean("showing"));
             }
         } catch (SQLException e)
         {
             e.printStackTrace();
         }
-        return list;
+        return map;
     }
 
     @Override
@@ -135,11 +141,12 @@ public class MySQLStorage implements IStorage
 
     private static class Queries
     {
-        public static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS enhancedping(uuid CHAR(36) NOT NULL)";
+        public static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS enhancedping(uuid CHAR(36) NOT NULL," +
+                "showing TINYINT NOT NULL,PRIMARY KEY (uuid))";
         public static final String DROP_TABLE = "DROP TABLE IF EXISTS enhancedping";
-        public static final String INSERT = "INSERT INTO enhancedping (uuid) VALUES(?)";
-        public static final String GET = "SELECT * FROM enhancedping WHERE uuid=?";
+        public static final String INSERT = "INSERT INTO enhancedping (uuid,showing) VALUES(?,?) ON DUPLICATE KEY " +
+                "UPDATE showing=?";
+        public static final String GET = "SELECT showing FROM enhancedping WHERE uuid=?";
         public static final String GET_ALL = "SELECT * FROM enhancedping?";
-        public static final String DELETE = "DELETE FROM enhancedping WHERE uuid=?";
     }
 }

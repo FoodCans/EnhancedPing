@@ -11,7 +11,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class PingManager
 {
@@ -20,7 +22,7 @@ public class PingManager
 
     private Map<UUID, PingPlayer> pingPlayerMap;
     private Map<UUID, BukkitTask> taskMap;
-    private Set<UUID> showing; // TODO NEed to rework this completely.
+    private Map<UUID, Boolean> showingMap;
     private BukkitTask showPingTask;
 
     public PingManager(EnhancedPing plugin, IStorage storage)
@@ -29,7 +31,7 @@ public class PingManager
         this.storage = storage;
         this.pingPlayerMap = new HashMap<>();
         this.taskMap = new HashMap<>();
-        this.showing = new HashSet<>();
+        this.showingMap = new HashMap<>();
     }
 
     public void addPingPlayer(UUID uuid)
@@ -74,9 +76,9 @@ public class PingManager
                     }
 
                     long ping = PingAPI.getPing(player);
-                    PingValue pingValue = PingValue.ofPing(ping);
+                    PingGrade pingGrade = PingGrade.ofPing(ping);
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(
-                            Lang.PING_BAR_FORMAT.getMessage(pingValue.getHexColor() + Long.toString(ping),
+                            Lang.PING_BAR_FORMAT.getMessage(pingGrade.getHexColor() + Long.toString(ping),
                                     pingPlayer.getPings().getPingBar().build())));
 
                 }
@@ -95,19 +97,18 @@ public class PingManager
 
     public boolean isShowing(UUID uuid)
     {
-        return showing.contains(uuid);
+        return showingMap.getOrDefault(uuid, false);
     }
 
     public void setShowing(UUID uuid, boolean showing)
     {
-        if (showing)
-        {
-            this.showing.add(uuid);
-        } else
-        {
-            this.showing.remove(uuid);
-        }
+        this.showingMap.put(uuid, showing);
         storage.setShowing(uuid, showing);
+    }
+
+    public IStorage getStorage()
+    {
+        return storage;
     }
 
     public PingPlayer getPingPlayer(UUID uuid)

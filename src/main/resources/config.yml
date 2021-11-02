@@ -28,18 +28,18 @@ MySQL:
 # General Settings #
 ####################
 
-# Should players receive a notification that their ping is too high in the action bar
+# Should players be shown the ping bar be default
 Show-Ping-Bar-Default: true
-# How often (in ticks) should a high ping notification be sent to players
-Ping-Bar-Rate: 10
+# How often (in ticks) should players be sent the ping bar
+Ping-Bar-Rate: 20
 # Number of pings to keep track of for average ping
 Max-Pings: 10
 # How often (in ticks) to send a new ping request to a player
 Ping-Rate: 20
 # How long (in ticks) before a ping request is timed out
 Ping-Request-Timeout: 200
-# Maximum ping for each value. Note: The final value is Horrible which has no max value.
-Ping-Values:
+# Maximum ping for each grade. Note: The final grade is Horrible which has no max value.
+Ping-Grades:
   Excellent: 50
   Great: 75
   Good: 150

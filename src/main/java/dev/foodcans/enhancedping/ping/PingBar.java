@@ -6,27 +6,27 @@ import java.util.Arrays;
 
 public class PingBar
 {
-    private EvictingQueue<PingValue> pingValues;
+    private EvictingQueue<PingGrade> pingGrades;
 
     public PingBar()
     {
-        PingValue[] pingValues = new PingValue[7];
-        Arrays.fill(pingValues, PingValue.EXCELLENT);
-        this.pingValues = EvictingQueue.create(7);
-        this.pingValues.addAll(Arrays.asList(pingValues));
+        PingGrade[] pingGrades = new PingGrade[7];
+        Arrays.fill(pingGrades, PingGrade.EXCELLENT);
+        this.pingGrades = EvictingQueue.create(7);
+        this.pingGrades.addAll(Arrays.asList(pingGrades));
     }
 
     public void addPing(long ping)
     {
-        pingValues.add(PingValue.ofPing(ping));
+        pingGrades.add(PingGrade.ofPing(ping));
     }
 
     public String build()
     {
         StringBuilder builder = new StringBuilder();
-        for (PingValue pingValue : pingValues)
+        for (PingGrade pingGrade : pingGrades)
         {
-            builder.append(pingValue.getHexColor()).append(pingValue.getUnicode());
+            builder.append(pingGrade.getHexColor()).append(pingGrade.getUnicode());
         }
         return builder.toString();
     }

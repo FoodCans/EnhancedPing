@@ -2,7 +2,7 @@ package dev.foodcans.enhancedping.storage;
 
 import dev.foodcans.pluginutils.Callback;
 
-import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public interface IStorage
@@ -11,11 +11,11 @@ public interface IStorage
 
     void setShowing(UUID uuid, boolean showing);
 
-    Boolean loadShowing(UUID uuid);
+    boolean loadShowing(UUID uuid);
 
     void saveShowing(UUID uuid, boolean showing);
 
-    List<UUID> getAllData();
+    Map<UUID, Boolean> getAllData();
 
     void deleteStorage();
 }
