@@ -5,13 +5,13 @@ import net.md_5.bungee.api.ChatColor;
 
 public enum PingValue
 {
-    EXCELLENT("#00FF00", '\u208B'),
-    GREAT("#4BFF00", '\uFE58'),
-    GOOD("#A5FF00", '\u2212'),
-    OKAY("#FFFF00", '\u23BC'),
+    EXCELLENT("#00FF00", '\uFE58'),
+    GREAT("#4BFF00", '\u208B'),
+    GOOD("#A5FF00", '\u23BC'),
+    OKAY("#FFFF00", '\u2212'),
     BAD("#FFB400", '\u23BB'),
-    VERY_BAD("#FF5A00", '\u00AF'),
-    HORRIBLE("#FF0000", '\u23BA');
+    VERY_BAD("#FF5A00", '\u23BA'),
+    HORRIBLE("#FF0000", '\u00AF');
 
     private String hexColor;
     private char unicode;

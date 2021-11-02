@@ -3,6 +3,7 @@ package dev.foodcans.enhancedping.ping;
 import dev.foodcans.enhancedping.EnhancedPing;
 import dev.foodcans.enhancedping.PingAPI;
 import dev.foodcans.enhancedping.settings.Config;
+import dev.foodcans.enhancedping.settings.lang.Lang;
 import dev.foodcans.enhancedping.storage.IStorage;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -72,11 +73,12 @@ public class PingManager
                         continue;
                     }
 
-                    // TODO Format ping bar
                     long ping = PingAPI.getPing(player);
                     PingValue pingValue = PingValue.ofPing(ping);
-                    TextComponent component = new TextComponent(pingPlayer.getPings().getPingBar().build());
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, component);
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(
+                            Lang.PING_BAR_FORMAT.getMessage(pingValue.getHexColor() + Long.toString(ping),
+                                    pingPlayer.getPings().getPingBar().build())));
+
                 }
             }
         }, 0L, Config.PING_BAR_RATE);

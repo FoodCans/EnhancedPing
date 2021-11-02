@@ -9,11 +9,11 @@ import static dev.foodcans.pluginutils.PluginUtils.Strings.translateColor;
 
 public enum Lang
 {
-    TOGGLED_SHOWING_ON("Toggled-Showing", "&8<&9Ping&8> &7Now showing ping bar."),
-    TOGGLED_SHOWING_OFF("Toggled-Showing", "&8<&9Ping&8> &7No longer showing ping bar."),
+    TOGGLED_SHOWING_ON("Toggled-Showing-On", "&8<&9Ping&8> &7Now showing ping bar."),
+    TOGGLED_SHOWING_OFF("Toggled-Showing-Off", "&8<&9Ping&8> &7No longer showing ping bar."),
     PING_FORMAT("Ping-Format", "&9Ping: {0}"),
     PING_FORMAT_ADMIN("Ping-Format-Admin", "&8<&9Ping&8> &7Ping for &f{0}&7: {1}"),
-    PING_BAR_FORMAT("Ping-Bar-Format", "&9Ping: {0}"),
+    PING_BAR_FORMAT("Ping-Bar-Format", "&9Ping: {0} {1}"),
     CONFIG_RELOADED("Config-Reloaded", "&8<&9Ping&8> &7Config and pings reloaded!"),
     PLAYER_NOT_FOUND("Player-Not-Found", "&8<&cPing&8> &7Player &f{0} &7not found!"),
     HELP("Help", "&8<&9Ping&8> &7Available commands: &f/pingadmin {0}"),

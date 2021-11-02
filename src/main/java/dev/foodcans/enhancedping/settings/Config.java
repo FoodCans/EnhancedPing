@@ -49,9 +49,9 @@ public class Config
         PING_RATE = config.getLong("Ping-Rate");
         PING_REQUEST_TIMEOUT = config.getLong("Ping-Request-Timeout");
 
-        ConfigurationSection valuesSection = config.createSection("Ping-Values");
+        ConfigurationSection valuesSection = config.getConfigurationSection("Ping-Values");
         PING_VALUES_EXCELLENT = valuesSection.getLong("Excellent");
-        PING_VALUES_GOOD = valuesSection.getLong("Great");
+        PING_VALUES_GREAT = valuesSection.getLong("Great");
         PING_VALUES_GOOD = valuesSection.getLong("Good");
         PING_VALUES_OKAY = valuesSection.getLong("Okay");
         PING_VALUES_BAD = valuesSection.getLong("Bad");

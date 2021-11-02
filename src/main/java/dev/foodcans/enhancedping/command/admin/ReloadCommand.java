@@ -22,10 +22,10 @@ public class ReloadCommand extends SubCommand
     @Override
     public void onCommand(CommandSender sender, String... args)
     {
+        pingManager.stopShowPingTask();
         EnhancedPing.getInstance().reloadConfig();
         EnhancedPing.getInstance().getLangFile().reload();
         Config.load(EnhancedPing.getInstance().getConfig());
-        pingManager.stopShowPingTask();
         pingManager.startShowPingTask();
         Lang.CONFIG_RELOADED.sendMessage(sender);
     }
